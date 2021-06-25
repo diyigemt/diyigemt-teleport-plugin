@@ -2,6 +2,7 @@ package net.diyigemt.mcpeplugin.listeners;
 
 import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
+import cn.nukkit.entity.passive.EntityAnimal;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
@@ -14,6 +15,7 @@ public class EntityDeathEventListener implements Listener {
   @EventHandler
   public void onPlayerKillAnimal(EntityDeathEvent event) {
     Entity entity = event.getEntity();
+    if (!(entity instanceof EntityAnimal)) return;
     EntityDamageEvent cause = entity.getLastDamageCause();
     if (cause instanceof EntityDamageByEntityEvent) {
       Entity damager = ((EntityDamageByEntityEvent) cause).getDamager();
