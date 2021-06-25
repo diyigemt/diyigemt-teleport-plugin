@@ -1,0 +1,6 @@
+name: diyigemt             # nukkit运行时识别的插件名
+main: net.diyigemt.mcpeplugin.MainPlugin  # 主类名称,不能以cn.nukkit开头
+api: ["1.0.13"]
+version: "1.0.0"              # 版本号
+author: diyigemt  # 感谢qq1586235767的提议，作者名称不能使用纯数字，否则会发生类型转换异常，您可以使用字符串避免这个问题
+description: diyigemt animal drop double plugin  # 介绍
