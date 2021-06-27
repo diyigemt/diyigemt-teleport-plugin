@@ -1,4 +1,4 @@
-package net.diyigemt.mcpeplugin.listeners;
+package net.diyigemt.mcpeplugin.listener;
 
 import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
