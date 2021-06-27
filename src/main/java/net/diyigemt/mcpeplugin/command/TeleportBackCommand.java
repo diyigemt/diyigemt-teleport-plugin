@@ -4,9 +4,11 @@ import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.defaults.VanillaCommand;
 import cn.nukkit.lang.TranslationContainer;
+import cn.nukkit.level.Location;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.TextFormat;
 import net.diyigemt.mcpeplugin.listener.PlayerTeleportEventListener;
+import net.diyigemt.mcpeplugin.utils.GeneralUtil;
 
 public class TeleportBackCommand extends VanillaCommand {
 
@@ -28,13 +30,13 @@ public class TeleportBackCommand extends VanillaCommand {
 			sender.sendMessage(new TranslationContainer(TextFormat.RED + "未找到目标"));
 			return true;
 		}
-		Vector3 lastPos = PlayerTeleportEventListener.teleportMap.get(senderName);
+		Location lastPos = PlayerTeleportEventListener.teleportMap.get(senderName);
 		if (lastPos == null) {
 			sender.sendMessage(new TranslationContainer(TextFormat.RED + "没有上一次传送地点记录"));
 			return true;
 		}
-		sender.sendMessage(new TranslationContainer(TextFormat.YELLOW + "返回上一次传送点... x:" + lastPos.getX() + " y:" + lastPos.getY() + " z:" + lastPos.getZ()));
-		player.sendPosition(lastPos);
+		player.teleport(lastPos);
+		sender.sendMessage(new TranslationContainer(TextFormat.YELLOW + "返回上一次传送点... level:" + lastPos.getLevel().getName() + " x:" + lastPos.getX() + " y:" + lastPos.getY() + " z:" + lastPos.getZ()));
 		return true;
 	}
 }

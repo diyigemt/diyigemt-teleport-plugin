@@ -11,7 +11,9 @@ import cn.nukkit.lang.TranslationContainer;
 import cn.nukkit.utils.TextFormat;
 import com.google.common.collect.ImmutableList;
 import net.diyigemt.mcpeplugin.MainPlugin;
+import net.diyigemt.mcpeplugin.listener.PlayerTeleportEventListener;
 import net.diyigemt.mcpeplugin.task.RemoveListTask;
+import net.diyigemt.mcpeplugin.utils.GeneralUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +22,7 @@ import java.util.Map;
 
 
 public class TeleportRequestCommand extends VanillaCommand {
-	private static final Map<String, List<String>> teleportMap = new HashMap<>();
+	private static final Map<String, List<String>> teleportRequestMap = new HashMap<>();
 
 	public TeleportRequestCommand(String name) {
 		super(name, "/tpa <name>|<ac|re> 请求传送到玩家|接受/拒绝请求", "/tpa aaa 请求传送到玩家aaa处");
@@ -45,13 +47,13 @@ public class TeleportRequestCommand extends VanillaCommand {
 		String infoString = "玩家:" + senderName + " 想要传送到你的位置";
 		targetPlayer.sendMessage(new TranslationContainer(TextFormat.YELLOW + infoString));
 		targetPlayer.sendMessage(new TranslationContainer(TextFormat.YELLOW + "请在15s内, 输入/tpa ac 接受, /tpa rj 拒绝"));
-		List<String> targetNames = teleportMap.get(targetName);
+		List<String> targetNames = teleportRequestMap.get(targetName);
 		if (targetNames == null) targetNames = new ArrayList<>();
 		targetNames.add(senderName);
-		teleportMap.put(targetName, targetNames);
+		teleportRequestMap.put(targetName, targetNames);
 		server.getScheduler().scheduleDelayedTask(new RemoveListTask<>(MainPlugin.INSTANCE, targetNames, targetName, (list, value) -> {
 			if (list.isEmpty()) {
-				teleportMap.remove(value);
+				teleportRequestMap.remove(value);
 			}
 			sender.sendMessage(new TranslationContainer(TextFormat.YELLOW + "传送请求没有回应"));
 		}), 20 * 15);
@@ -64,15 +66,17 @@ public class TeleportRequestCommand extends VanillaCommand {
 		}
 		String senderName = sender.getName();
 		Server server = sender.getServer();
+		Player senderPlayer = server.getPlayerExact(senderName);
 		for (String targetName : targetNames) {
 			Player targetPlayer = server.getPlayerExact(targetName);
 			if (targetPlayer == null) {
 				sender.sendMessage(new TranslationContainer(TextFormat.RED + "发送请求的目标不存在或已下线"));
 				continue;
 			}
-			targetPlayer.sendPosition(server.getPlayerExact(senderName).getPosition());
+			GeneralUtil.setBackLocation(targetName, targetPlayer.getLocation());
+			targetPlayer.teleport(senderPlayer.getLocation());
 		}
-		teleportMap.remove(senderName);
+		teleportRequestMap.remove(senderName);
 		return true;
 	}
 
@@ -91,13 +95,13 @@ public class TeleportRequestCommand extends VanillaCommand {
 			}
 			targetPlayer.sendMessage(new TranslationContainer(TextFormat.RED + "目标拒绝了你的传送请求"));
 		}
-		teleportMap.remove(senderName);
+		teleportRequestMap.remove(senderName);
 		return true;
 	}
 
 	private List<String> beforeAction(CommandSender sender) {
 		String senderName = sender.getName();
-		List<String> targetNames = teleportMap.get(senderName);
+		List<String> targetNames = teleportRequestMap.get(senderName);
 		if (targetNames == null) {
 			sender.sendMessage(new TranslationContainer(TextFormat.RED + "传送请求不存在或已过期"));
 		}
