@@ -8,19 +8,16 @@ import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.command.defaults.VanillaCommand;
 import cn.nukkit.lang.TranslationContainer;
-import cn.nukkit.level.Level;
 import cn.nukkit.level.Location;
-import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.TextFormat;
 import com.google.common.collect.ImmutableList;
-import net.diyigemt.mcpeplugin.dao.HomeDAO;
 import net.diyigemt.mcpeplugin.dao.SpawnDAO;
-import net.diyigemt.mcpeplugin.entity.HomePosition;
-import net.diyigemt.mcpeplugin.utils.GeneralUtil;
 
 import java.sql.SQLException;
 
 public class TeleportSetSpawnPointCommand extends VanillaCommand {
+
+  public static final String MAIN_WORLD_SPAWN_NAME = "main_world_spawn_point";
 
   public TeleportSetSpawnPointCommand(String name) {
     super(name, "/setspawn 设置该世界的出生点", "/setspawn 设置该世界的出生点");
@@ -50,16 +47,18 @@ public class TeleportSetSpawnPointCommand extends VanillaCommand {
           e.printStackTrace();
           sender.sendMessage(new TranslationContainer(TextFormat.RED + "设置失败, 数据库出错"));
         }
+        sender.sendMessage(new TranslationContainer(TextFormat.YELLOW + "设置重生点 " + location.getLevel().getName() + " 成功"));
         break;
       }
       case 1: {
         if (!args[0].equals("main")) break;
         try {
-          new SpawnDAO().setSpawnLocation(location, "main");
+          new SpawnDAO().setSpawnLocation(location, MAIN_WORLD_SPAWN_NAME);
         } catch (SQLException e) {
           e.printStackTrace();
           sender.sendMessage(new TranslationContainer(TextFormat.RED + "设置失败, 数据库出错"));
         }
+        sender.sendMessage(new TranslationContainer(TextFormat.YELLOW + "设置重生点 main 成功"));
         break;
       }
       case 3: {
@@ -73,6 +72,7 @@ public class TeleportSetSpawnPointCommand extends VanillaCommand {
           e.printStackTrace();
           sender.sendMessage(new TranslationContainer(TextFormat.RED + "设置失败, 数据库出错"));
         }
+        sender.sendMessage(new TranslationContainer(TextFormat.YELLOW + "设置重生点 " + levelName + " 成功"));
         break;
       }
       default: {

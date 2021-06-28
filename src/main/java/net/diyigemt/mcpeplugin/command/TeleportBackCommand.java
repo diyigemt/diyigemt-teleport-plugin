@@ -5,7 +5,6 @@ import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.defaults.VanillaCommand;
 import cn.nukkit.lang.TranslationContainer;
 import cn.nukkit.level.Location;
-import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.TextFormat;
 import net.diyigemt.mcpeplugin.listener.PlayerTeleportEventListener;
 import net.diyigemt.mcpeplugin.utils.GeneralUtil;
@@ -19,10 +18,7 @@ public class TeleportBackCommand extends VanillaCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String label, String[] args) {
-		if (!sender.isPlayer()) {
-			sender.sendMessage(new TranslationContainer(TextFormat.RED + "请以玩家身份调用"));
-			return true;
-		}
+		if (!GeneralUtil.checkPlayer(sender)) return true;
 		if (args.length != 0) return false;
 		String senderName = sender.getName();
 		Player player = sender.getServer().getPlayerExact(senderName);

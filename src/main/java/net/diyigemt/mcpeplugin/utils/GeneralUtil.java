@@ -46,4 +46,12 @@ public class GeneralUtil {
 		}
 		return homePosition;
 	}
+
+	public static boolean checkPlayer(CommandSender sender) {
+		if (!sender.isPlayer()) {
+			sender.sendMessage(new TranslationContainer(TextFormat.RED + "请以玩家身份调用"));
+			return false;
+		}
+		return true;
+	}
 }

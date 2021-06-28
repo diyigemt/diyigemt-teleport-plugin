@@ -36,5 +36,6 @@ public class MainPlugin extends PluginBase {
     server.getCommandMap().register("", new TeleportHomeCommand("home"), "home");
     server.getCommandMap().register("", new TeleportRemoveHomeCommand("removehome"), "removehome");
     server.getCommandMap().register("", new TeleportSetSpawnPointCommand("setspawn"), "setspawn");
+    server.getCommandMap().register("", new TeleportSpawnCommand("spawn"), "spawn");
   }
 }

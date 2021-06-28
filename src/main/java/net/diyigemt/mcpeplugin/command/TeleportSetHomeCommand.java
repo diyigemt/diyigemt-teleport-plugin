@@ -22,10 +22,7 @@ public class TeleportSetHomeCommand extends VanillaCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String label, String[] args) {
-		if (!sender.isPlayer()) {
-			sender.sendMessage(new TranslationContainer(TextFormat.RED + "请以玩家身份调用"));
-			return true;
-		}
+		if (!GeneralUtil.checkPlayer(sender)) return true;
 		if (args.length > 1) {
 			sender.sendMessage(new TranslationContainer(TextFormat.RED + "多余参数将被忽略"));
 		}

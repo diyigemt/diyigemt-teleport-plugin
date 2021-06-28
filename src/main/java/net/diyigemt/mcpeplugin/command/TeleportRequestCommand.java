@@ -110,10 +110,7 @@ public class TeleportRequestCommand extends VanillaCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String s, String[] args) {
-		if (!sender.isPlayer()) {
-			sender.sendMessage(new TranslationContainer(TextFormat.RED + "请以玩家身份调用"));
-			return true;
-		}
+		if (!GeneralUtil.checkPlayer(sender)) return true;
 		if (args.length != 1) {
 			sender.sendMessage(new TranslationContainer(TextFormat.RED + "参数不能为空"));
 			return false;
