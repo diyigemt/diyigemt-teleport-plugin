@@ -7,14 +7,13 @@ import cn.nukkit.command.defaults.VanillaCommand;
 import cn.nukkit.lang.TranslationContainer;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
-import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.TextFormat;
 import net.diyigemt.mcpeplugin.dao.HomeDAO;
 import net.diyigemt.mcpeplugin.entity.HomePosition;
-import net.diyigemt.mcpeplugin.listener.PlayerTeleportEventListener;
 import net.diyigemt.mcpeplugin.utils.GeneralUtil;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class TeleportHomeCommand extends VanillaCommand {
 
@@ -37,18 +36,8 @@ public class TeleportHomeCommand extends VanillaCommand {
 			homeName = args[0];
 		}
 		String playerName = sender.getName();
-		HomePosition homePosition = null;
-		try {
-			homePosition = new HomeDAO().getHomePosition(playerName, homeName);
-		} catch (SQLException e) {
-			sender.sendMessage(new TranslationContainer(TextFormat.RED + "获取家信息失败"));
-			e.printStackTrace();
-			return true;
-		}
-		if (homePosition == null) {
-			sender.sendMessage(new TranslationContainer(TextFormat.RED + "家:" + homeName + " 不存在"));
-			return true;
-		}
+		HomePosition homePosition = GeneralUtil.homeBaseInfo(sender, homeName);
+		if (homePosition == null) return true;
 		Server server = sender.getServer();
 		Player player = server.getPlayerExact(playerName);
 		if (player != null) {

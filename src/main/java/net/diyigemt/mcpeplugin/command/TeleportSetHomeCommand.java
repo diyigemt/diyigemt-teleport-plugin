@@ -5,17 +5,18 @@ import cn.nukkit.Server;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.defaults.VanillaCommand;
 import cn.nukkit.lang.TranslationContainer;
-import cn.nukkit.level.Level;
 import cn.nukkit.level.Location;
 import cn.nukkit.utils.TextFormat;
 import net.diyigemt.mcpeplugin.dao.HomeDAO;
+import net.diyigemt.mcpeplugin.entity.HomePosition;
+import net.diyigemt.mcpeplugin.utils.GeneralUtil;
 
 import java.sql.SQLException;
 
 public class TeleportSetHomeCommand extends VanillaCommand {
 
 	public TeleportSetHomeCommand(String name) {
-		super(name, "/sethome <home name>设置的家", "/sethome 设置名称为'home'的家");
+		super(name, "/sethome <home name>设置的家", "/sethome 设置名称为home的家");
 		this.commandParameters.clear();
 	}
 
@@ -31,6 +32,11 @@ public class TeleportSetHomeCommand extends VanillaCommand {
 		String homeName = HomeDAO.defaultHomeName;
 		if (args.length == 1) {
 			homeName = args[0];
+		}
+		HomePosition homePosition = GeneralUtil.homeBaseInfo(sender, homeName);
+		if (homePosition != null) {
+			sender.sendMessage(new TranslationContainer(TextFormat.RED + "家" + homePosition.getHomeName() + "(" + homePosition.getLevelName() + ")已经存在"));
+			return true;
 		}
 		String playerName = sender.getName();
 		Server server = sender.getServer();

@@ -17,6 +17,8 @@ public class DatabaseHelper {
   private static DatabaseHelper INSTANCE;
   // 数据库文件存放位置
   private static String SQL_URL_BASE = "jdbc:sqlite:";
+  // 数据库文件名
+  private static String DATABASE_NAME = "diyigemt";
 
 
   public static DatabaseHelper getInstance() { return INSTANCE; }
@@ -45,21 +47,25 @@ public class DatabaseHelper {
 
   /**
    * <h2>根据数据库文件名 对应的实体类 和表key对应的实体类获取数据库DAO</h2>
-   * @param dBName 数据库文件吗名
    * @param entity 实体类
    * @param key 主键类
    * @param <T> 实体类
    * @param <TD> 主键类
    * @return 一个连接池失败时返回null
    */
-  public <T, TD> Dao<T, TD> getDAO(String dBName, Class<T> entity, Class<TD> key) {
+  public <T, TD> Dao<T, TD> getDAO(Class<T> entity, Class<TD> key) {
     Dao<T, TD> dao = null;
     try {
-      dao = DaoManager.createDao(getDataSourceURL(dBName), entity);
+      JdbcConnectionSource url = getDataSourceURL(DATABASE_NAME);
+      dao = DaoManager.lookupDao(url, entity);
+      if (dao == null) {
+        dao = DaoManager.createDao(url, entity);
+      }
       if (!dao.isTableExists()) TableUtils.createTable(dao);
     } catch (SQLException e) {
       e.printStackTrace();
-      return null;
+      System.err.println("数据库创建失败");
+      System.exit(-1);
     }
     return dao;
   }

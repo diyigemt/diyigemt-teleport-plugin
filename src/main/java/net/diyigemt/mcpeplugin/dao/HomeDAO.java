@@ -2,8 +2,6 @@ package net.diyigemt.mcpeplugin.dao;
 
 import cn.nukkit.level.Location;
 import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.stmt.Where;
 import net.diyigemt.mcpeplugin.entity.HomePosition;
 import net.diyigemt.mcpeplugin.sql.DatabaseHelper;
 
@@ -18,7 +16,7 @@ public class HomeDAO {
 	private static Dao<HomePosition, Integer> dao;
 
 	public static void init() {
-		dao = DatabaseHelper.getInstance().getDAO("home", HomePosition.class, Integer.class);
+		dao = DatabaseHelper.getInstance().getDAO(HomePosition.class, Integer.class);
 	}
 
 	public void setHome(String playerName, Location pos) throws SQLException {
@@ -26,7 +24,7 @@ public class HomeDAO {
 	}
 
 	public void setHome(String playerName, String homeName, Location pos) throws SQLException {
-		HomePosition homePosition = getHomePosition(playerName, homeName);
+		HomePosition homePosition = getHome(playerName, homeName);
 		if (homePosition != null) {
 			homePosition.setPosition(pos);
 			dao.update(homePosition);
@@ -35,12 +33,20 @@ public class HomeDAO {
 		dao.createIfNotExists(homePosition);
 	}
 
-	public HomePosition getHomePosition(String playerName, String homeName) throws SQLException {
+	public HomePosition getHome(String playerName, String homeName) throws SQLException {
 		Map<String, Object> params = new HashMap<>();
 		params.put("player_name", playerName);
 		params.put("home_name", homeName);
 		List<HomePosition> homePositions = dao.queryForFieldValues(params);
 		if (homePositions != null && !homePositions.isEmpty()) return homePositions.get(0);
 		return null;
+	}
+
+	public List<HomePosition> getAllHome(String playerName) throws SQLException {
+		return dao.queryForEq("player_name", playerName);
+	}
+
+	public int removeHome(HomePosition position) throws SQLException {
+		return dao.delete(position);
 	}
 }
